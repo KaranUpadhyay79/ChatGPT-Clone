@@ -1,0 +1,21 @@
+* {
+    color: #ececec;
+    font-family: Roboto , 'Open Sans' , 'Helvetica Neue' , sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;;
+}
+
+/* .app{
+    background-color: #212121;
+    display: flex;
+} */
+
+.app {
+  display: flex;
+  height: 100vh;         /* Full viewport height */
+  overflow: hidden;      /* No scroll outside */
+  background-color: #212121;
+}
