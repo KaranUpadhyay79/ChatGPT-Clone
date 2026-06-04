@@ -1,73 +1,50 @@
-//By NPM package
-
-// import OpenAI from 'openai';
-// import 'dotenv/config';
-
-// const client = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
-// });
-
-// const response = await client.responses.create({
-//   model: 'gpt-4o-mini',
-//   input: 'Differences between SQL and MongoDB in 100 line?',
-// });
-
-// console.log(response.output_text);
-
-
-// Using OpenAI With API EndPoint :-
-import express from 'express';
+// ✅ STEP 1: dotenv SABSE PEHLE — koi bhi import se upar
 import "dotenv/config";
-import cors from 'cors';
-import mongoose from 'mongoose';
-import chatRoutes from './routes/chat.js';
+
+// ✅ STEP 2: Startup pe hi critical env vars validate karo
+const REQUIRED_ENV_VARS = ["JWT_SECRET", "MONGODB_URI"];
+const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+if (missing.length > 0) {
+  console.error(`❌ FATAL: Missing environment variables: ${missing.join(", ")}`);
+  console.error("📄 Make sure .env file exists in Backend/ folder");
+  process.exit(1);
+}
+
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import authRoutes from "./routes/auth.js";
+import chatRoutes from "./routes/chat.js";
+import knowledgeRoutes from "./routes/knowledge.js";
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(cors());
 
-app.use("/api", chatRoutes);
-
-app.listen(PORT,() => {
-    console.log(`server running on port ${PORT}`);
-    connectDB();
+// ✅ Health check — Playwright is endpoint ka wait karta hai
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.use("/api", chatRoutes);
+app.use("/api/knowledge", knowledgeRoutes);
+app.use("/api/auth", authRoutes);
+
+// ✅ Pehle DB connect karo, phir server start
 const connectDB = async () => {
-    try{
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log("Connected with Database!");
-    }catch(err){
-        console.log("Failed to connect with Db",err);
-    }
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("✅ Connected with Database!");
 
-}
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to connect with DB:", err.message);
+    process.exit(1);
+  }
+};
 
-// app.post("/test" , async (req , res) => {
-//     const options = {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-//         },
-//         body: JSON.stringify({
-//             model: "gpt-4o-mini",
-//             messages: [{
-//                 role: "user",
-//                 content: req.body.message
-//             }]
-//         })
-//     };
-
-//     try{
-//        const responce = await fetch("https://api.openai.com/v1/chat/completions", options);
-//        const data = await responce.json();
-//        //console.log(data.choices[0].message.content);
-//        res.send(data.choices[0].message.content);
-//     } catch(err){
-//         console.log(err);
-//     }
-// })
-
+connectDB();

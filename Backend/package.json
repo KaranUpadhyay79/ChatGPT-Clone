@@ -1,11 +1,38 @@
 {
   "type": "module",
   "dependencies": {
+    "@sendinblue/client": "^3.3.1",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "mongoose": "^8.19.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.21.0",
+    "nodemailer": "^8.0.10",
     "nodemon": "^3.1.10",
-    "openai": "^6.3.0"
+    "openai": "^6.3.0",
+    "resend": "^6.12.4"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.7",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "babel-jest": "^30.4.1",
+    "cross-env": "^7.0.3",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^9.1.6",
+    "supertest": "^6.3.3"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
+    "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules jest __tests__/unit --verbose",
+    "test:integration": "cross-env NODE_OPTIONS=--experimental-vm-modules jest __tests__/integration --verbose",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:unit && npm run test:integration",
+    "test:debug": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand --inspect-brk"
   }
 }
