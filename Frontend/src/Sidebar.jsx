@@ -121,7 +121,9 @@ import { MyContext } from "./MyContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { v1 as uuidv1 } from 'uuid';
 
-const API = "http://localhost:8080/api";
+// const API = "http://localhost:8080/api";
+
+const API = `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/api`;
 
 // ✅ Central fetch helper — token attach karta hai, 401 pe logout
 const authFetch = async (url, options = {}, navigate) => {

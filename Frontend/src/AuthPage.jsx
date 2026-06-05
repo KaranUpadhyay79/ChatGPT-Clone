@@ -726,7 +726,11 @@ import axios from "axios";
 import aiImage from "./assets/blacklogo.png";
 import "./AuthPage.css";
 
-const BASE_URL = "http://localhost:8080/api/auth";
+// const BASE_URL = "http://localhost:8080/api/auth";
+
+const BASE_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api/auth`
+  : "http://localhost:8080/api/auth";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
